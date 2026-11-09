@@ -39,7 +39,7 @@ a{color:inherit}
 @media(max-width:640px){.bar nav .cta{display:none}.brand{font-size:15px}.lang button{padding:5px 10px}}
 
 /* hero */
-.hero{background:linear-gradient(180deg,#0b2e33 0%,#12525b 62%,#1b7a84 100%);color:#fff;position:relative;overflow:hidden;padding:56px 0 150px}
+.hero{background:linear-gradient(180deg,rgba(11,46,51,.85) 0%,rgba(18,82,91,.78) 62%,rgba(27,122,132,.85) 100%),url(assets/hero.jpg) center/cover;color:#fff;position:relative;overflow:hidden;padding:56px 0 150px}
 .sun{position:absolute;right:8%;bottom:70px;width:190px;height:190px;border-radius:50%;
   background:radial-gradient(circle at 50% 40%,#ffc266,var(--sun) 70%);opacity:.95}
 .hero .wrap{position:relative;z-index:2}
@@ -67,8 +67,7 @@ h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);color:var(--deep);l
 /* included — a meal laid out like a thaali: four round plates */
 .plates{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .plate{text-align:center}
-.plate i{display:grid;place-items:center;width:104px;height:104px;margin:0 auto 12px;border-radius:50%;font-size:46px;font-style:normal;
-  background:var(--mist);box-shadow:inset 0 0 0 6px #fff,0 0 0 2px var(--line)}
+.plate img{display:block;width:104px;height:104px;margin:0 auto 12px;border-radius:50%;object-fit:cover;border:6px solid #fff;outline:2px solid var(--line)}
 .plate h3{font-size:18px;color:var(--deep)}
 .plate p{font-size:15px;color:var(--mute);line-height:1.5}
 @media(max-width:720px){.plates{grid-template-columns:1fr 1fr;gap:26px 12px}}
@@ -195,10 +194,10 @@ footer b{color:#fff}
   <h2 data-en="Included with the Full Day ticket">Full Day ടിക്കറ്റിൽ ഉൾപ്പെടുന്നത്</h2>
   <p class="sub" data-en="All four come free with every Full Day ticket.">ഈ നാലും ടിക്കറ്റിനൊപ്പം ഫ്രീ ആയി ലഭിക്കും.</p>
   <div class="plates">
-    <div class="plate"><i>🍛</i><h3 data-en="Fish curry meals">മീൻ കറി ഊണ്</h3><p data-en="Rice, fish curry, fried fish and side dishes, made with the farm's fresh fish.">ഫാമിലെ ഫ്രഷ് മീൻ കറി, മീൻ വറുത്തത്, കൂട്ടുകറികൾ എന്നിവയോടെ നാടൻ ഊണ്.</p></div>
-    <div class="plate"><i>🚣</i><h3 data-en="Pedal boating">പെഡൽ ബോട്ടിങ്</h3><p data-en="One round on the lake in a pedal boat.">തടാകത്തിൽ പെഡൽ ബോട്ടിൽ ഒരു റൗണ്ട്.</p></div>
-    <div class="plate"><i>🛶</i><h3 data-en="Rowing boat">തുഴയുന്ന വഞ്ചി</h3><p data-en="Row out on a traditional boat.">പരമ്പരാഗത വഞ്ചിയിൽ തുഴഞ്ഞ് പോകാം.</p></div>
-    <div class="plate"><i>🎣</i><h3 data-en="Angling">ചൂണ്ട</h3><p data-en="Sit on the lakeshore and fish.">തടാകക്കരയിൽ ഇരുന്ന് ചൂണ്ടയിടാം.</p></div>
+    <div class="plate"><img src="assets/meal.jpg" alt="മീൻ കറി ഊണ്"><h3 data-en="Fish curry meals">മീൻ കറി ഊണ്</h3><p data-en="Rice, fish curry, fried fish and side dishes, made with the farm's fresh fish.">ഫാമിലെ ഫ്രഷ് മീൻ കറി, മീൻ വറുത്തത്, കൂട്ടുകറികൾ എന്നിവയോടെ നാടൻ ഊണ്.</p></div>
+    <div class="plate"><img src="assets/pedal-boat.jpg" alt="പെഡൽ ബോട്ടിങ്"><h3 data-en="Pedal boating">പെഡൽ ബോട്ടിങ്</h3><p data-en="One round on the lake in a pedal boat.">തടാകത്തിൽ പെഡൽ ബോട്ടിൽ ഒരു റൗണ്ട്.</p></div>
+    <div class="plate"><img src="assets/rowing-boat.jpg" alt="തുഴയുന്ന വഞ്ചി"><h3 data-en="Rowing boat">തുഴയുന്ന വഞ്ചി</h3><p data-en="Row out on a traditional boat.">പരമ്പരാഗത വഞ്ചിയിൽ തുഴഞ്ഞ് പോകാം.</p></div>
+    <div class="plate"><img src="assets/fishing.jpg" alt="ചൂണ്ട"><h3 data-en="Angling">ചൂണ്ട</h3><p data-en="Sit on the lakeshore and fish.">തടാകക്കരയിൽ ഇരുന്ന് ചൂണ്ടയിടാം.</p></div>
   </div>
 </section>
 
