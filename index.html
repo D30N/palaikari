@@ -346,7 +346,7 @@ footer b{color:#fff}
 
     <div class="two">
       <div class="fld"><label for="nm" data-en="Your name">നിങ്ങളുടെ പേര്</label><input type="text" id="nm" autocomplete="off"></div>
-      <div class="fld"><label for="ph" data-en="Mobile (WhatsApp)">മൊബൈൽ നമ്പർ (WhatsApp)</label><input type="tel" id="ph" inputmode="numeric" maxlength="10" autocomplete="off"></div>
+      <div class="fld"><label for="ph" data-en="Mobile (WhatsApp)">മൊബൈൽ നമ്പർ (WhatsApp)</label><input type="tel" id="ph" inputmode="numeric" maxlength="10" autocomplete="off" enterkeyhint="done"></div>
     </div>
 
     <div id="disc" style="color:#1f9d55;font-weight:600;font-size:15px;min-height:22px;margin-bottom:6px"></div>
@@ -456,6 +456,9 @@ footer b{color:#fff}
     n[k]=Math.max(k==="g"?1:0,Math.min(mx,n[k]+ +b.dataset.d)); calc()}});
   d.onchange=calc;
   document.querySelectorAll("input[name=pass]").forEach(function(r){r.onchange=calc});
+
+  /* hide the mobile keyboard when Enter/Done is pressed in the name/phone fields */
+  ["nm","ph"].forEach(function(id){$(id).addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();$(id).blur()}})});
 
   $("next").onclick=function(){
     if(capLoaded&&pass()==="full"&&capRemaining<=0){
