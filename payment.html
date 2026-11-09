@@ -244,7 +244,7 @@ footer b{color:#fff}
     $("p1").classList.add("hide");$("p2").classList.remove("hide");
     window.open(waUrl,"_blank");
   };
-  $("again").onclick=function(e){e.preventDefault();window.open(waUrl,"_blank")};
+  $("again").onclick=function(e){e.preventDefault();window.open("https://wa.me/"+WA+"?text="+encodeURIComponent("Booking status?"),"_blank")};
 
   var sl;try{sl=localStorage.getItem("pff-lang")}catch(e){}
   if(sl==="en")setLang("en");
