@@ -191,6 +191,9 @@ input:focus{outline:3px solid #9db9d9;border-color:var(--lake)}
 .lastbook .status{color:#1f9d55;font-weight:600;font-size:15px;margin:10px 0 14px}
 .lastbook .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .lastbook .clear{background:none;border:0;color:var(--mute);font:600 14px var(--sans);cursor:pointer;padding:8px 4px}
+.lastbook .newbtn{background:#fff;color:var(--sun);border:1.5px solid var(--sun);border-radius:99px;padding:9px 18px;font:700 15px var(--sans);cursor:pointer;transition:transform .25s ease,background-color .25s ease}
+.lastbook .newbtn:hover{background:var(--mist);transform:translateY(-1px)}
+.lastbook .newbtn:active{transform:scale(.97)}
 footer{background:var(--deep);color:#a8c4de;padding:28px 0 calc(28px + env(safe-area-inset-bottom,0));font-size:14.5px;text-align:center}
 footer b{color:#fff}
 </style>
@@ -304,6 +307,7 @@ footer b{color:#fff}
       <p class="status" data-en="Payment sent — the farm will verify and confirm on WhatsApp.">പേയ്‌മെന്റ് അയച്ചു — ഫാം വെരിഫൈ ചെയ്ത് WhatsApp ൽ കൺഫർമേഷൻ അയയ്ക്കും.</p>
       <div class="actions">
         <a class="cta" id="lb-wa" href="#" target="_blank" rel="noopener">Booking status?</a>
+        <button class="newbtn" id="lb-new" type="button" data-en="+ New booking">+ പുതിയ ബുക്കിങ്</button>
         <button class="clear" id="lb-clear" type="button" data-en="Remove">നീക്കം ചെയ്യൂ</button>
       </div>
     </div>
@@ -483,8 +487,10 @@ footer b{color:#fff}
     $("lb-total").textContent="₹"+(b.total||0);
     $("lb-wa").href="https://wa.me/917306479394?text="+encodeURIComponent("Booking status?");
     $("lastbooking").classList.remove("hide");
+    $("s1").classList.add("hide");
   }
-  $("lb-clear").onclick=function(){try{localStorage.removeItem("pff-last-booking")}catch(e){}$("lastbooking").classList.add("hide")};
+  $("lb-new").onclick=function(){$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")};
+  $("lb-clear").onclick=function(){try{localStorage.removeItem("pff-last-booking")}catch(e){}$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")};
   showLastBooking();
 
   loadCap();
