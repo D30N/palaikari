@@ -243,7 +243,7 @@ footer b{color:#fff}
     if(!utr){$("utr").focus();$("utr").placeholder=lang==="en"?"Enter UTR first":"UTR നൽകുക";return}
     var ref="PFF"+Date.now().toString(36).toUpperCase().slice(-6);
     /* save last booking on this phone, so the ref survives a browser close */
-    try{localStorage.setItem("pff-last-booking",JSON.stringify({ref:ref,date:date,pass:pass,passLabel:ptxt+" ("+ttxt+")",guests:g,total:total,utr:utr,name:nm,phone:ph,hol:hol,createdAt:Date.now()}))}catch(e){}
+    try{var bk=JSON.parse(localStorage.getItem("pff-bookings")||"[]");bk.push({ref:ref,date:date,pass:pass,passLabel:ptxt+" ("+ttxt+")",guests:g,total:total,utr:utr,name:nm,phone:ph,hol:hol,createdAt:Date.now()});localStorage.setItem("pff-bookings",JSON.stringify(bk))}catch(e){}
     var m=["*Palaikari Fish Farm — Booking "+ref+"*","Date: "+date+(hol?" (holiday rate)":""),"Pass: "+ptxt+" ("+ttxt+")","Guests: "+g,
       "Add-ons: "+(ad.join(", ")||"none"),"Name: "+nm,"Mobile: "+ph,"Total paid: ₹"+total,"UTR: "+utr].join("\n");
     waUrl="https://wa.me/"+WA+"?text="+encodeURIComponent(m);

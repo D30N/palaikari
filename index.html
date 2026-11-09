@@ -190,8 +190,9 @@ input:focus{outline:3px solid #9db9d9;border-color:var(--lake)}
 .lastbook .ref{font-family:var(--serif);font-size:24px;letter-spacing:.04em}
 .lastbook .status{color:#1f9d55;font-weight:600;font-size:15px;margin:10px 0 14px}
 .lastbook .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.lb-x{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:#dc2626;color:#fff;border:0;font:700 16px/1 var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.lb-x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:22px;line-height:1;cursor:pointer;padding:4px}
 .lb-x:active{transform:scale(.92)}
+.lb-newrow{margin:2px 0 22px}
 .lb-modal{position:fixed;inset:0;background:rgba(10,37,64,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
 .lb-dialog{background:#fff;border-radius:16px;padding:22px;max-width:380px;width:100%;box-shadow:0 24px 60px -12px rgba(10,37,64,.5)}
 .lb-dialog h3{margin:0 0 10px;color:var(--deep);font-size:19px;line-height:1.35}
@@ -306,21 +307,8 @@ footer b{color:#fff}
   <p class="sub" data-en="Choose a date and pass, pay by UPI, then confirm on WhatsApp.">തീയതിയും പാസും തിരഞ്ഞെടുക്കൂ, UPI വഴി പേ ചെയ്ത്, WhatsApp ൽ കൺഫേം ചെയ്യൂ.</p>
 
   <div class="hide" id="lastbooking">
-    <div class="lastbook reveal">
-      <button class="lb-x" id="lb-clear" type="button" aria-label="Remove">✕</button>
-      <span class="lb-badge" data-en="✓ Saved on this phone">✓ Phone-il save aayathu</span>
-      <h2 data-en="My last booking">എന്റെ അവസാന ബുക്കിങ്</h2>
-      <div class="row"><span data-en="Booking reference">Booking Reference</span><b class="ref" id="lb-ref">—</b></div>
-      <div class="row"><span data-en="Date">തീയതി</span><b id="lb-date">—</b></div>
-      <div class="row"><span data-en="Pass">പാസ്</span><b id="lb-pass">—</b></div>
-      <div class="row"><span data-en="Number of persons">ആളുകളുടെ എണ്ണം</span><b id="lb-guests">—</b></div>
-      <div class="row"><span data-en="Total paid">ആകെ അടച്ച തുക</span><b id="lb-total">—</b></div>
-      <p class="status" data-en="Payment sent — the farm will verify and confirm on WhatsApp.">പേയ്‌മെന്റ് അയച്ചു — ഫാം വെരിഫൈ ചെയ്ത് WhatsApp ൽ കൺഫർമേഷൻ അയയ്ക്കും.</p>
-      <div class="actions">
-        <a class="cta" id="lb-wa" href="#" target="_blank" rel="noopener">Booking status?</a>
-        <button class="newbtn" id="lb-new" type="button" data-en="+ New booking">+ പുതിയ ബുക്കിങ്</button>
-      </div>
-    </div>
+    <div id="lb-cards"></div>
+    <div class="lb-newrow"><button class="newbtn" id="lb-new" type="button" data-en="+ New booking">+ പുതിയ ബുക്കിങ്</button></div>
   </div>
 
   <div class="lb-modal hide" id="lb-modal" role="dialog" aria-modal="true">
@@ -498,26 +486,57 @@ footer b{color:#fff}
     location.href="payment.html?"+q;
   };
 
-  /* last booking: saved on payment confirm, shown again after a browser close */
+  /* saved bookings: every confirmed booking stays as its own card, newest last */
+  function getBookings(){
+    var list=[];
+    try{list=JSON.parse(localStorage.getItem("pff-bookings")||"[]")}catch(e){list=[]}
+    if(!list.length){
+      /* migrate the old single-booking save, if any */
+      var old=null; try{old=JSON.parse(localStorage.getItem("pff-last-booking")||"null")}catch(e){}
+      if(old&&old.ref){list=[old];try{localStorage.setItem("pff-bookings",JSON.stringify(list));localStorage.removeItem("pff-last-booking")}catch(e){}}
+    }
+    return list;
+  }
+  function saveBookings(list){try{localStorage.setItem("pff-bookings",JSON.stringify(list))}catch(e){}}
+  function esc(s){return String(s==null?"—":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+  function cardHtml(b){
+    return '<div class="lastbook reveal in"><button class="lb-x" type="button" data-ref="'+esc(b.ref)+'" aria-label="Remove">❌</button>'
+      +'<span class="lb-badge" data-en="✓ Saved on this phone">✓ Phone-il save aayathu</span>'
+      +'<h2 data-en="My last booking">എന്റെ അവസാന ബുക്കിങ്</h2>'
+      +'<div class="row"><span data-en="Booking reference">Booking Reference</span><b class="ref">'+esc(b.ref)+'</b></div>'
+      +'<div class="row"><span data-en="Date">തീയതി</span><b>'+esc(b.date)+'</b></div>'
+      +'<div class="row"><span data-en="Pass">പാസ്</span><b>'+esc(b.passLabel||b.pass)+'</b></div>'
+      +'<div class="row"><span data-en="Number of persons">ആളുകളുടെ എണ്ണം</span><b>'+esc(b.guests)+'</b></div>'
+      +'<div class="row"><span data-en="Total paid">ആകെ അടച്ച തുക</span><b>₹'+esc(b.total||0)+'</b></div>'
+      +'<p class="status" data-en="Payment sent — the farm will verify and confirm on WhatsApp.">പേയ്‌മെന്റ് അയച്ചു — ഫാം വെരിഫൈ ചെയ്ത് WhatsApp ൽ കൺഫർമേഷൻ അയയ്ക്കും.</p>'
+      +'<div class="actions"><a class="cta" href="https://wa.me/917306479394?text='+encodeURIComponent("Booking status? "+b.ref)+'" target="_blank" rel="noopener">Booking status?</a></div></div>';
+  }
   function showLastBooking(){
-    var raw; try{raw=localStorage.getItem("pff-last-booking")}catch(e){return}
-    if(!raw)return;
-    var b; try{b=JSON.parse(raw)}catch(e){return}
-    if(!b||!b.ref)return;
-    $("lb-ref").textContent=b.ref;
-    $("lb-date").textContent=b.date||"—";
-    $("lb-pass").textContent=b.passLabel||b.pass||"—";
-    $("lb-guests").textContent=b.guests||"—";
-    $("lb-total").textContent="₹"+(b.total||0);
-    $("lb-wa").href="https://wa.me/917306479394?text="+encodeURIComponent("Booking status?");
+    var list=getBookings().filter(function(b){return b&&b.ref});
+    if(!list.length)return;
+    $("lb-cards").innerHTML=list.map(cardHtml).join("");
+    if(lang==="en")setLang("en");
     $("lastbooking").classList.remove("hide");
     $("s1").classList.add("hide");
   }
+  var pendingRef="";
+  $("lb-cards").onclick=function(e){
+    var x=e.target.closest?e.target.closest(".lb-x"):null;
+    if(!x)return;
+    pendingRef=x.getAttribute("data-ref")||"";
+    $("lb-modal").classList.remove("hide");
+  };
   $("lb-new").onclick=function(){$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")};
-  $("lb-clear").onclick=function(){$("lb-modal").classList.remove("hide")};
-  $("lb-no").onclick=function(){$("lb-modal").classList.add("hide")};
-  $("lb-yes").onclick=function(){$("lb-modal").classList.add("hide");try{localStorage.removeItem("pff-last-booking")}catch(e){}$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")};
-  $("lb-modal").onclick=function(e){if(e.target===$("lb-modal"))$("lb-modal").classList.add("hide")};
+  $("lb-no").onclick=function(){$("lb-modal").classList.add("hide");pendingRef=""};
+  $("lb-yes").onclick=function(){
+    $("lb-modal").classList.add("hide");
+    var list=getBookings().filter(function(b){return b&&b.ref!==pendingRef});
+    pendingRef="";
+    saveBookings(list);
+    if(!list.length){$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")}
+    else showLastBooking();
+  };
+  $("lb-modal").onclick=function(e){if(e.target===$("lb-modal")){$("lb-modal").classList.add("hide");pendingRef=""}};
   showLastBooking();
 
   loadCap();
