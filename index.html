@@ -190,9 +190,8 @@ input:focus{outline:3px solid #9db9d9;border-color:var(--lake)}
 .lastbook .ref{font-family:var(--serif);font-size:24px;letter-spacing:.04em}
 .lastbook .status{color:#1f9d55;font-weight:600;font-size:15px;margin:10px 0 14px}
 .lastbook .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.lb-x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:22px;line-height:1;cursor:pointer;padding:4px}
+.lb-x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:16px;line-height:1;cursor:pointer;padding:4px}
 .lb-x:active{transform:scale(.92)}
-.lb-newrow{margin:2px 0 22px}
 .lb-modal{position:fixed;inset:0;background:rgba(10,37,64,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
 .lb-dialog{background:#fff;border-radius:16px;padding:22px;max-width:380px;width:100%;box-shadow:0 24px 60px -12px rgba(10,37,64,.5)}
 .lb-dialog h3{margin:0 0 10px;color:var(--deep);font-size:19px;line-height:1.35}
@@ -308,7 +307,6 @@ footer b{color:#fff}
 
   <div class="hide" id="lastbooking">
     <div id="lb-cards"></div>
-    <div class="lb-newrow"><button class="newbtn" id="lb-new" type="button" data-en="+ New booking">+ പുതിയ ബുക്കിങ്</button></div>
   </div>
 
   <div class="lb-modal hide" id="lb-modal" role="dialog" aria-modal="true">
@@ -509,7 +507,7 @@ footer b{color:#fff}
       +'<div class="row"><span data-en="Number of persons">ആളുകളുടെ എണ്ണം</span><b>'+esc(b.guests)+'</b></div>'
       +'<div class="row"><span data-en="Total paid">ആകെ അടച്ച തുക</span><b>₹'+esc(b.total||0)+'</b></div>'
       +'<p class="status" data-en="Payment sent — the farm will verify and confirm on WhatsApp.">പേയ്‌മെന്റ് അയച്ചു — ഫാം വെരിഫൈ ചെയ്ത് WhatsApp ൽ കൺഫർമേഷൻ അയയ്ക്കും.</p>'
-      +'<div class="actions"><a class="cta" href="https://wa.me/917306479394?text='+encodeURIComponent("Booking status? "+b.ref)+'" target="_blank" rel="noopener">Booking status?</a></div></div>';
+      +'<div class="actions"><a class="cta" href="https://wa.me/917306479394?text='+encodeURIComponent("Booking status? "+b.ref)+'" target="_blank" rel="noopener">Booking status?</a><button class="newbtn" type="button" data-en="+ New booking">+ പുതിയ ബുക്കിങ്</button></div></div>';
   }
   function showLastBooking(){
     var list=getBookings().filter(function(b){return b&&b.ref});
@@ -521,12 +519,13 @@ footer b{color:#fff}
   }
   var pendingRef="";
   $("lb-cards").onclick=function(e){
+    var nb=e.target.closest?e.target.closest(".newbtn"):null;
+    if(nb){$("lastbooking").classList.add("hide");$("s1").classList.remove("hide");return}
     var x=e.target.closest?e.target.closest(".lb-x"):null;
     if(!x)return;
     pendingRef=x.getAttribute("data-ref")||"";
     $("lb-modal").classList.remove("hide");
   };
-  $("lb-new").onclick=function(){$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")};
   $("lb-no").onclick=function(){$("lb-modal").classList.add("hide");pendingRef=""};
   $("lb-yes").onclick=function(){
     $("lb-modal").classList.add("hide");
