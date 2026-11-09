@@ -105,6 +105,7 @@ footer b{color:#fff}
       <div class="row"><span data-en="Add-ons">ആഡ്-ഓണുകൾ</span><b id="r-addons">—</b></div>
       <div class="row"><span data-en="Name">പേര്</span><b id="r-name">—</b></div>
       <div class="row"><span data-en="Mobile">മൊബൈൽ</span><b id="r-phone">—</b></div>
+      <div class="row" id="disc-row" style="display:none"><span data-en="Group discount">ഗ്രൂപ്പ് ഡിസ്കൗണ്ട്</span><b id="r-disc" style="color:#1f9d55">—</b></div>
       <div class="row total-row"><span data-en="Total to pay">ആകെ അടയ്ക്കേണ്ട തുക</span><b id="r-total">₹0</b></div>
     </div>
 
@@ -162,7 +163,8 @@ footer b{color:#fff}
   /* booking data from the booking page */
   var date=q.get("date")||"", pass=q.get("pass")||"full", g=+(q.get("g")||2),
       k=+(q.get("k")||0), c=+(q.get("c")||0), s=+(q.get("s")||0),
-      nm=q.get("nm")||"", ph=q.get("ph")||"", total=+(q.get("total")||0), hol=q.get("hol")==="1";
+      nm=q.get("nm")||"", ph=q.get("ph")||"", total=+(q.get("total")||0), hol=q.get("hol")==="1",
+      disc=+(q.get("disc")||0), free=+(q.get("free")||0);
   if(!date||!nm||!ph){
     $("err").textContent=lang==="en"?"No booking found. Please book from the home page.":"ബുക്കിങ് കണ്ടില്ല. ഹോം പേജിൽ നിന്ന് ബുക്ക് ചെയ്യൂ.";
     $("send").disabled=true;
@@ -177,6 +179,7 @@ footer b{color:#fff}
   $("r-addons").textContent=ad.join(", ")||(lang==="en"?"None":"ഇല്ല");
   $("r-name").textContent=nm;
   $("r-phone").textContent=ph;
+  if(disc>0){$("disc-row").style.display="flex";$("r-disc").textContent="−₹"+disc+" ("+free+" free entry)"}
   $("r-total").textContent="₹"+total;
   $("upilink").href="upi://pay?pa="+encodeURIComponent(UPI)+"&pn="+encodeURIComponent("PALAIKARI FISH FARM")+"&am="+total+"&cu=INR&tn="+encodeURIComponent("Palaikari booking");
 

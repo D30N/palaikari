@@ -267,6 +267,7 @@ footer b{color:#fff}
     <div class="fld">
       <div class="step"><div><b data-en="Guests">ആളുകളുടെ എണ്ണം</b><small id="rate"></small></div>
         <div class="ctr"><button type="button" data-k="g" data-d="-1" aria-label="−">−</button><output id="g">2</output><button type="button" data-k="g" data-d="1" aria-label="+">+</button></div></div>
+      <small style="display:block;color:var(--mute);font-size:14px;margin-top:6px" data-en="Children above 9 years need a ticket">9 വയസ്സിന് മുകളിലുള്ള കുട്ടികൾക്ക് ടിക്കറ്റ് എടുക്കണം</small>
     </div>
 
     <div class="fld"><details class="addonbox">
@@ -284,6 +285,7 @@ footer b{color:#fff}
       <div class="fld"><label for="ph" data-en="Mobile (WhatsApp)">മൊബൈൽ നമ്പർ (WhatsApp)</label><input type="tel" id="ph" inputmode="numeric" maxlength="10" autocomplete="tel-national"></div>
     </div>
 
+    <div id="disc" style="color:#1f9d55;font-weight:600;font-size:15px;min-height:22px;margin-bottom:6px"></div>
     <div class="total"><span data-en="Total to pay">ആകെ അടയ്ക്കേണ്ട തുക</span><strong id="tot">₹0</strong></div>
     <p class="err" id="err" role="alert"></p>
     <button class="go" id="next" type="button" data-en="Continue to payment">പേയ്‌മെന്റിലേക്ക് പോകുക</button>
@@ -331,7 +333,7 @@ footer b{color:#fff}
   /* Kerala public holidays — auto-detected (Govt. Gazette G.O.(P) 14/2025/GAD for 2026, G.O.(P) 22/2026/GAD for 2027).
      Sat/Sun are holiday rate too; moon-dependent dates may shift by a day. */
   var HOLIDAYS=new Set(["2026-01-02","2026-01-26","2026-03-20","2026-04-02","2026-04-03","2026-04-14","2026-04-15","2026-05-01","2026-05-27","2026-06-25","2026-08-12","2026-08-15","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-09-04","2026-09-21","2026-10-02","2026-10-20","2026-10-21","2026-12-25","2027-01-02","2027-01-26","2027-03-06","2027-03-10","2027-03-25","2027-03-26","2027-04-14","2027-04-15","2027-05-01","2027-05-17","2027-06-16","2027-08-02","2027-08-15","2027-08-25","2027-09-11","2027-09-12","2027-09-13","2027-09-14","2027-09-15","2027-09-21","2027-10-02","2027-10-08","2027-10-09","2027-10-29","2027-12-25"]);
-  var P={full:[300,325],eve:[100,150]}, n={g:2,k:0,c:0,s:0}, total=0, holiday=false;
+  var P={full:[300,325],eve:[100,150]}, n={g:2,k:0,c:0,s:0}, total=0, holiday=false, disc=0, free=0;
   var d=$("date"), today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
   d.min=d.value=today.toISOString().slice(0,10);
   function pass(){return document.querySelector("input[name=pass]:checked").value}
@@ -339,8 +341,11 @@ footer b{color:#fff}
     var wk=d.value?[0,6].indexOf(new Date(d.value+"T00:00").getDay())>-1:false;
     holiday=wk||HOLIDAYS.has(d.value);
     var r=P[pass()][holiday?1:0];
-    total=r*n.g+50*n.k+50*n.c+150*n.s;
+    var entry=pass()==="full"?(holiday?175:150):(holiday?150:100);
+    free=Math.floor(n.g/10); disc=free*entry;
+    total=r*n.g+50*n.k+50*n.c+150*n.s-disc;
     $("rate").textContent="₹"+r+" × "+n.g+(holiday?(lang==="en"?" · holiday rate":" · ഹോളിഡേ നിരക്ക്"):"");
+    $("disc").textContent=disc?(lang==="en"?"Group discount: "+free+" free entry (−₹"+disc+")":"ഗ്രൂപ്പ് ഡിസ്കൗണ്ട്: "+free+" ഫ്രീ എൻട്രി (−₹"+disc+")"):"";
     $("tot").textContent="₹"+total;
     for(var k in n)$(k).textContent=n[k];
   }
@@ -357,7 +362,8 @@ footer b{color:#fff}
     $("err").textContent=e?e[lang==="en"?1:0]:"";
     if(e)return;
     var q=["date="+encodeURIComponent(d.value),"pass="+pass(),"g="+n.g,"k="+n.k,"c="+n.c,"s="+n.s,
-      "nm="+encodeURIComponent(nm),"ph="+ph,"total="+total,"hol="+(holiday?1:0)].join("&");
+      "nm="+encodeURIComponent(nm),"ph="+ph,"total="+total,"hol="+(holiday?1:0),
+      "disc="+disc,"free="+free].join("&");
     location.href="payment.html?"+q;
   };
 
