@@ -358,6 +358,7 @@ footer b{color:#fff}
   }
   var d=$("date"), today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
   d.min=d.value=today.toISOString().slice(0,10);
+  d.max=new Date(today.getTime()+89*864e5).toISOString().slice(0,10);
   function pass(){return document.querySelector("input[name=pass]:checked").value}
   function calc(){
     var wk=d.value?[0,6].indexOf(new Date(d.value+"T00:00").getDay())>-1:false;
@@ -399,6 +400,7 @@ footer b{color:#fff}
     }
     var nm=$("nm").value.trim(), ph=$("ph").value.replace(/\D/g,"");
     var e=!d.value?["തീയതി തിരഞ്ഞെടുക്കുക","Please choose a date"]
+      :d.value>d.max?["90 ദിവസത്തിനുള്ളിലെ തീയതി തിരഞ്ഞെടുക്കുക","Please choose a date within the next 90 days"]
       :!nm?["പേര് നൽകുക","Please enter your name"]
       :ph.length!==10?["10 അക്ക മൊബൈൽ നമ്പർ നൽകുക","Please enter a 10-digit mobile number"]:null;
     $("err").textContent=e?e[lang==="en"?1:0]:"";
