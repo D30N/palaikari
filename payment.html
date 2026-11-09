@@ -140,7 +140,7 @@ footer b{color:#fff}
     <h3 style="font-size:24px;color:var(--deep)" data-en="Booking sent!">ബുക്കിങ് അയച്ചു! 🎉</h3>
     <p class="note" data-en="Booking reference">Booking Reference</p>
     <p class="ref" id="ref"></p>
-    <p style="margin:14px 0" data-en="The farm will verify your payment and confirm on WhatsApp. Entry: 10 AM – 5 PM.">ഫാം പേയ്‌മെന്റ് വെരിഫൈ ചെയ്ത് WhatsApp ൽ കൺഫർമേഷൻ അയയ്ക്കും. എൻട്രി സമയം: രാവിലെ 10 – വൈകീട്ട് 5.</p>
+    <p style="margin:14px 0" data-en="The farm will verify your payment and confirm on WhatsApp. Entry till 5 PM · Out till 6 PM.">ഫാം പേയ്‌മെന്റ് വെരിഫൈ ചെയ്ത് WhatsApp ൽ കൺഫർമേഷൻ അയയ്ക്കും. എൻട്രി വൈകീട്ട് 5 വരെ · പുറത്തിറങ്ങാൻ 6 വരെ.</p>
     <a class="cta" id="again" href="#" data-en="Open WhatsApp message again">WhatsApp മെസ്സേജ് വീണ്ടും തുറക്കുക</a>
   </div>
 
@@ -183,7 +183,7 @@ footer b{color:#fff}
     $("send").disabled=true;
   }
   var ptxt=pass==="full"?"Full Day":"Evening Pass";
-  var ttxt=pass==="full"?"10 AM – 5 PM":"3 PM – 5 PM";
+  var ttxt=pass==="full"?"10 AM – 6 PM":"3 PM – 6 PM";
   var ad=[];if(k)ad.push("Kayaking x"+k);if(c)ad.push("Coracle x"+c);if(s)ad.push("Speed boat x"+s);
   $("r-date").textContent=date+(hol?(lang==="en"?" (holiday rate)":" (ഹോളിഡേ നിരക്ക്)"):"");
   $("r-time").textContent=ttxt;
