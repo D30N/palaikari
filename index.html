@@ -255,7 +255,6 @@ footer b{color:#fff}
     <div class="fld">
       <label for="date" data-en="Visit date">വരുന്ന തീയതി</label>
       <input type="date" id="date">
-      <label class="chk"><input type="checkbox" id="hol"><span data-en="Public holiday (tick if it is a holiday that is not a Saturday or Sunday)">പൊതു അവധി ദിവസമാണ് (ശനി/ഞായർ അല്ലെങ്കിലും ഹോളിഡേ നിരക്ക് വേണമെങ്കിൽ ടിക് ചെയ്യുക)</span></label>
     </div>
 
     <div class="fld"><span class="l" data-en="Pass">പാസ് തിരഞ്ഞെടുക്കുക</span>
@@ -329,13 +328,16 @@ footer b{color:#fff}
   document.querySelectorAll(".lang button").forEach(function(b){b.onclick=function(){setLang(b.dataset.l)}});
 
   /* pricing */
+  /* Kerala public holidays — auto-detected (Govt. Gazette G.O.(P) 14/2025/GAD for 2026, G.O.(P) 22/2026/GAD for 2027).
+     Sat/Sun are holiday rate too; moon-dependent dates may shift by a day. */
+  var HOLIDAYS=new Set(["2026-01-02","2026-01-26","2026-03-20","2026-04-02","2026-04-03","2026-04-14","2026-04-15","2026-05-01","2026-05-27","2026-06-25","2026-08-12","2026-08-15","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-09-04","2026-09-21","2026-10-02","2026-10-20","2026-10-21","2026-12-25","2027-01-02","2027-01-26","2027-03-06","2027-03-10","2027-03-25","2027-03-26","2027-04-14","2027-04-15","2027-05-01","2027-05-17","2027-06-16","2027-08-02","2027-08-15","2027-08-25","2027-09-11","2027-09-12","2027-09-13","2027-09-14","2027-09-15","2027-09-21","2027-10-02","2027-10-08","2027-10-09","2027-10-29","2027-12-25"]);
   var P={full:[300,325],eve:[100,150]}, n={g:2,k:0,c:0,s:0}, total=0, holiday=false;
   var d=$("date"), today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
   d.min=d.value=today.toISOString().slice(0,10);
   function pass(){return document.querySelector("input[name=pass]:checked").value}
   function calc(){
     var wk=d.value?[0,6].indexOf(new Date(d.value+"T00:00").getDay())>-1:false;
-    holiday=wk||$("hol").checked;
+    holiday=wk||HOLIDAYS.has(d.value);
     var r=P[pass()][holiday?1:0];
     total=r*n.g+50*n.k+50*n.c+150*n.s;
     $("rate").textContent="₹"+r+" × "+n.g+(holiday?(lang==="en"?" · holiday rate":" · ഹോളിഡേ നിരക്ക്"):"");
@@ -344,7 +346,7 @@ footer b{color:#fff}
   }
   document.querySelectorAll(".ctr button").forEach(function(b){b.onclick=function(){
     var k=b.dataset.k; n[k]=Math.max(k==="g"?1:0,Math.min(60,n[k]+ +b.dataset.d)); calc()}});
-  d.onchange=$("hol").onchange=calc;
+  d.onchange=calc;
   document.querySelectorAll("input[name=pass]").forEach(function(r){r.onchange=calc});
 
   $("next").onclick=function(){
