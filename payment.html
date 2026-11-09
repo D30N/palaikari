@@ -25,6 +25,22 @@ a{color:inherit}
 .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
+/* smooth animations — panel reveal, button press, success pop */
+.anim .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
+.anim .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important}}
+@keyframes popIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+.done:not(.hide) .ok{animation:popIn .5s cubic-bezier(.22,.61,.36,1) both}
+.cta,.go{transition:transform .25s ease,background-color .25s ease,box-shadow .25s ease}
+.cta:hover,.go:hover{transform:translateY(-1px)}
+.cta:active,.go:active{transform:scale(.97)}
+.bankbox summary .chev{transition:transform .3s ease}
+input[type=text]{transition:border-color .25s ease,box-shadow .25s ease}
+.cpbtn{transition:transform .15s ease,background-color .2s ease}
+.cpbtn:active{transform:scale(.92)}
+.receipt .row{transition:background-color .25s ease}
+.receipt .row:hover{background:#f4f8fc}
+
 /* top bar */
 .bar{position:sticky;top:0;z-index:20;background:rgba(10,37,64,.94);backdrop-filter:blur(8px);
   padding-top:env(safe-area-inset-top,0)}
@@ -107,7 +123,7 @@ footer b{color:#fff}
   <h2 data-en="Payment">പേയ്‌മെന്റ്</h2>
   <p class="sub" data-en="Check your booking, pay by UPI, then confirm on WhatsApp.">ബുക്കിങ് പരിശോധിച്ച്, UPI വഴി പേ ചെയ്ത്, WhatsApp ൽ കൺഫേം ചെയ്യൂ.</p>
 
-  <div class="panel" id="p1">
+  <div class="panel reveal" id="p1">
     <div class="receipt" id="receipt">
       <div class="rhead" data-en="Booking confirmation">ബുക്കിങ് കൺഫർമേഷൻ</div>
       <div class="row"><span data-en="Date">തീയതി</span><b id="r-date">—</b></div>
@@ -169,6 +185,11 @@ footer b{color:#fff}
   var $=function(i){return document.getElementById(i)};
   var UPI="QR919400993314-5337@unionbankofindia", WA="917306479394";
   var lang="ml";
+
+  /* smooth scroll-reveal animations */
+  document.documentElement.classList.add("anim");
+  var io=("IntersectionObserver" in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12,rootMargin:"0px 0px -40px 0px"}):null;
+  document.querySelectorAll(".reveal").forEach(function(el){if(io)io.observe(el);else el.classList.add("in")});
   var q=new URLSearchParams(location.search);
 
   /* language toggle: Malayalam is the default text, English lives in data-en */
