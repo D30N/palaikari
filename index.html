@@ -259,6 +259,7 @@ footer b{color:#fff}
     <div class="fld">
       <label for="date" data-en="Visit date">വരുന്ന തീയതി</label>
       <input type="date" id="date">
+      <small id="capinfo" style="display:block;margin-top:6px;font-size:14px"></small>
     </div>
 
     <div class="fld"><span class="l" data-en="Pass">പാസ് തിരഞ്ഞെടുക്കുക</span>
@@ -339,12 +340,32 @@ footer b{color:#fff}
      Sat/Sun are holiday rate too; moon-dependent dates may shift by a day. */
   var HOLIDAYS=new Set(["2026-01-02","2026-01-26","2026-03-20","2026-04-02","2026-04-03","2026-04-14","2026-04-15","2026-05-01","2026-05-27","2026-06-25","2026-08-12","2026-08-15","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-09-04","2026-09-21","2026-10-02","2026-10-20","2026-10-21","2026-12-25","2027-01-02","2027-01-26","2027-03-06","2027-03-10","2027-03-25","2027-03-26","2027-04-14","2027-04-15","2027-05-01","2027-05-17","2027-06-16","2027-08-02","2027-08-15","2027-08-25","2027-09-11","2027-09-12","2027-09-13","2027-09-14","2027-09-15","2027-09-21","2027-10-02","2027-10-08","2027-10-09","2027-10-29","2027-12-25"]);
   var P={full:[300,325],eve:[100,150]}, n={g:2,k:0,c:0,s:0}, total=0, holiday=false, disc=0, free=0;
+  /* daily capacity: max 100 guests/day, counts from the Palaikari Bookings sheet */
+  var CAP=100, bookedByDate={}, capLoaded=false, capRemaining=100;
+  function loadCap(){
+    fetch("https://docs.google.com/spreadsheets/d/1mzwxkoy0lC00sfefw0KY_hMf4dcArZNX4wIQAziNFRw/gviz/tq?tqx=out:json&sheet=Sheet1")
+      .then(function(r){return r.text()})
+      .then(function(t){
+        var j=JSON.parse(t.substring(t.indexOf("{"),t.lastIndexOf("}")+1));
+        var rows=(j.table&&j.table.rows)||[];
+        rows.forEach(function(r){
+          var c=r.c||[], dt=c[0]&&c[0].v, n=c[1]&&c[1].v;
+          if(dt&&typeof n==="number")bookedByDate[String(dt).slice(0,10)]=n;
+        });
+        capLoaded=true; calc();
+      })
+      .catch(function(){capLoaded=false});
+  }
   var d=$("date"), today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
   d.min=d.value=today.toISOString().slice(0,10);
   function pass(){return document.querySelector("input[name=pass]:checked").value}
   function calc(){
     var wk=d.value?[0,6].indexOf(new Date(d.value+"T00:00").getDay())>-1:false;
     holiday=wk||HOLIDAYS.has(d.value);
+    /* capacity */
+    var booked=capLoaded?(bookedByDate[d.value]||0):0;
+    capRemaining=CAP-booked;
+    if(capLoaded&&capRemaining>0&&n.g>capRemaining)n.g=capRemaining;
     var r=P[pass()][holiday?1:0];
     var entry=pass()==="full"?(holiday?175:150):(holiday?150:100);
     free=Math.floor(n.g/10); disc=free*entry;
@@ -353,13 +374,29 @@ footer b{color:#fff}
     $("disc").textContent=disc?(lang==="en"?"Group discount: "+free+" free entry (−₹"+disc+")":"ഗ്രൂപ്പ് ഡിസ്കൗണ്ട്: "+free+" ഫ്രീ എൻട്രി (−₹"+disc+")"):"";
     $("tot").textContent="₹"+total;
     for(var k in n)$(k).textContent=n[k];
+    var ci=$("capinfo");
+    if(capLoaded){
+      if(capRemaining<=0){
+        ci.textContent=lang==="en"?"Booking full for this date — please choose another date":"ഈ തീയതിയിൽ ബുക്കിങ് ഫുൾ ആണ് — വേറെ തീയതി തിരഞ്ഞെടുക്കൂ";
+        ci.style.color="#b3261e";
+      }else{
+        ci.textContent=(lang==="en"?capRemaining+" spots left":capRemaining+" സ്പോട്ട് ബാക്കി");
+        ci.style.color="var(--mute)";
+      }
+    }else{ci.textContent="";}
   }
   document.querySelectorAll(".ctr button").forEach(function(b){b.onclick=function(){
-    var k=b.dataset.k; n[k]=Math.max(k==="g"?1:0,Math.min(60,n[k]+ +b.dataset.d)); calc()}});
+    var k=b.dataset.k;
+    var mx=(k==="g"&&capLoaded)?Math.min(60,Math.max(1,capRemaining)):60;
+    n[k]=Math.max(k==="g"?1:0,Math.min(mx,n[k]+ +b.dataset.d)); calc()}});
   d.onchange=calc;
   document.querySelectorAll("input[name=pass]").forEach(function(r){r.onchange=calc});
 
   $("next").onclick=function(){
+    if(capLoaded&&capRemaining<=0){
+      $("err").textContent=lang==="en"?"Booking full for this date. Please choose another date.":"ഈ തീയതിയിൽ ബുക്കിങ് ഫുൾ ആണ്. വേറെ തീയതി തിരഞ്ഞെടുക്കൂ.";
+      return;
+    }
     var nm=$("nm").value.trim(), ph=$("ph").value.replace(/\D/g,"");
     var e=!d.value?["തീയതി തിരഞ്ഞെടുക്കുക","Please choose a date"]
       :!nm?["പേര് നൽകുക","Please enter your name"]
@@ -372,6 +409,7 @@ footer b{color:#fff}
     location.href="payment.html?"+q;
   };
 
+  loadCap();
   var s;try{s=localStorage.getItem("pff-lang")}catch(e){}
   if(s==="en")setLang("en");else calc();
 })();
