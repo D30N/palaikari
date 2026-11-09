@@ -180,7 +180,7 @@ input:focus{outline:3px solid #9db9d9;border-color:var(--lake)}
 .nums b{display:block;font-size:clamp(12px,3.6vw,20px);color:var(--deep);white-space:nowrap}
 .nums span{display:block;font-size:11px;color:var(--mute);margin-top:2px}
 /* last booking card (shown only when a booking was saved on this phone) */
-.lastbook{background:#fff;border:2px solid var(--sun);border-radius:16px;box-shadow:0 0 0 4px rgba(37,99,235,.20),0 18px 40px -18px rgba(10,37,64,.55);padding:20px 22px;margin:0 0 22px}
+.lastbook{position:relative;background:#fff;border:2px solid var(--sun);border-radius:16px;box-shadow:0 0 0 4px rgba(37,99,235,.20),0 18px 40px -18px rgba(10,37,64,.55);padding:20px 22px;margin:0 0 22px}
 .lastbook h2{margin:0 0 8px;color:var(--deep)}
 .lb-badge{display:inline-block;background:#1f9d55;color:#fff;font:700 13px var(--sans);border-radius:99px;padding:4px 12px;margin-bottom:10px}
 .lastbook .row{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-top:1px solid var(--line);font-size:15.5px}
@@ -190,7 +190,16 @@ input:focus{outline:3px solid #9db9d9;border-color:var(--lake)}
 .lastbook .ref{font-family:var(--serif);font-size:24px;letter-spacing:.04em}
 .lastbook .status{color:#1f9d55;font-weight:600;font-size:15px;margin:10px 0 14px}
 .lastbook .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.lastbook .clear{background:none;border:0;color:var(--mute);font:600 14px var(--sans);cursor:pointer;padding:8px 4px}
+.lb-x{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:#dc2626;color:#fff;border:0;font:700 16px/1 var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.lb-x:active{transform:scale(.92)}
+.lb-modal{position:fixed;inset:0;background:rgba(10,37,64,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.lb-dialog{background:#fff;border-radius:16px;padding:22px;max-width:380px;width:100%;box-shadow:0 24px 60px -12px rgba(10,37,64,.5)}
+.lb-dialog h3{margin:0 0 10px;color:var(--deep);font-size:19px;line-height:1.35}
+.lb-dialog p{margin:0 0 18px;color:var(--mute);font-size:15px;line-height:1.5}
+.lb-modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.lb-yes{background:#dc2626;color:#fff;border:0;border-radius:99px;padding:10px 22px;font:700 15px var(--sans);cursor:pointer}
+.lb-no{background:#fff;color:var(--deep);border:1.5px solid var(--line);border-radius:99px;padding:10px 22px;font:700 15px var(--sans);cursor:pointer}
+.lb-yes:active,.lb-no:active{transform:scale(.97)}
 .lastbook .newbtn{background:#fff;color:var(--sun);border:1.5px solid var(--sun);border-radius:99px;padding:9px 18px;font:700 15px var(--sans);cursor:pointer;transition:transform .25s ease,background-color .25s ease}
 .lastbook .newbtn:hover{background:var(--mist);transform:translateY(-1px)}
 .lastbook .newbtn:active{transform:scale(.97)}
@@ -298,6 +307,7 @@ footer b{color:#fff}
 
   <div class="hide" id="lastbooking">
     <div class="lastbook reveal">
+      <button class="lb-x" id="lb-clear" type="button" aria-label="Remove">✕</button>
       <span class="lb-badge" data-en="✓ Saved on this phone">✓ Phone-il save aayathu</span>
       <h2 data-en="My last booking">എന്റെ അവസാന ബുക്കിങ്</h2>
       <div class="row"><span data-en="Booking reference">Booking Reference</span><b class="ref" id="lb-ref">—</b></div>
@@ -309,7 +319,17 @@ footer b{color:#fff}
       <div class="actions">
         <a class="cta" id="lb-wa" href="#" target="_blank" rel="noopener">Booking status?</a>
         <button class="newbtn" id="lb-new" type="button" data-en="+ New booking">+ പുതിയ ബുക്കിങ്</button>
-        <button class="clear" id="lb-clear" type="button" data-en="Remove">നീക്കം ചെയ്യൂ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lb-modal hide" id="lb-modal" role="dialog" aria-modal="true">
+    <div class="lb-dialog">
+      <h3 data-en="Are you sure to remove this booking confirmation card?">ഈ ബുക്കിങ് കൺഫർമേഷൻ കാർഡ് നീക്കം ചെയ്യണമെന്ന് ഉറപ്പാണോ?</h3>
+      <p data-en="We recommend you to take a screenshot before discarding.">നീക്കം ചെയ്യുന്നതിന് മുമ്പ് ഒരു സ്ക്രീൻഷോട്ട് എടുക്കാൻ ഞങ്ങൾ ശുപാർശ ചെയ്യുന്നു.</p>
+      <div class="lb-modal-actions">
+        <button class="lb-yes" id="lb-yes" type="button" data-en="Yes">അതെ</button>
+        <button class="lb-no" id="lb-no" type="button" data-en="No">അല്ല</button>
       </div>
     </div>
   </div>
@@ -494,7 +514,10 @@ footer b{color:#fff}
     $("s1").classList.add("hide");
   }
   $("lb-new").onclick=function(){$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")};
-  $("lb-clear").onclick=function(){try{localStorage.removeItem("pff-last-booking")}catch(e){}$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")};
+  $("lb-clear").onclick=function(){$("lb-modal").classList.remove("hide")};
+  $("lb-no").onclick=function(){$("lb-modal").classList.add("hide")};
+  $("lb-yes").onclick=function(){$("lb-modal").classList.add("hide");try{localStorage.removeItem("pff-last-booking")}catch(e){}$("lastbooking").classList.add("hide");$("s1").classList.remove("hide")};
+  $("lb-modal").onclick=function(e){if(e.target===$("lb-modal"))$("lb-modal").classList.add("hide")};
   showLastBooking();
 
   loadCap();
