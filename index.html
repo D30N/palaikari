@@ -120,6 +120,7 @@ input:focus{outline:3px solid #9db9d9;border-color:var(--lake)}
 .addonbox summary .chev{color:var(--lake);transition:transform .2s;flex:none}
 .addonbox[open ] summary .chev{transform:rotate(180deg)}
 .step small{color:var(--mute);display:block;font-size:13.5px}
+.aprice{color:var(--lake);font-weight:700}
 .ctr{display:flex;align-items:center;gap:4px;flex:none}
 .ctr button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--lake);background:#fff;color:var(--lake);font:600 22px/1 var(--sans);cursor:pointer}
 .ctr button:active{background:var(--mist)}
@@ -275,11 +276,11 @@ footer b{color:#fff}
 
     <div class="fld"><details class="addonbox">
       <summary><span data-en="Add-ons (optional)">ആഡ്-ഓണുകൾ (ആവശ്യമുള്ളവർക്ക് മാത്രം)</span><span class="chev">▾</span></summary>
-      <div class="step"><div><b data-en="Kayaking — ₹50">കയാക്കിങ് — ₹50</b><small data-en="per person">ഒരാൾക്ക്</small></div>
+      <div class="step"><div><b data-en="Kayaking">കയാക്കിങ്</b> <span class="aprice">₹50</span><small data-en="per person">ഒരാൾക്ക്</small></div>
         <div class="ctr"><button type="button" data-k="k" data-d="-1" aria-label="−">−</button><output id="k">0</output><button type="button" data-k="k" data-d="1" aria-label="+">+</button></div></div>
-      <div class="step"><div><b data-en="Coracle boat — ₹50">കുട്ടവഞ്ചി — ₹50</b><small data-en="per person">ഒരാൾക്ക്</small></div>
+      <div class="step"><div><b data-en="Coracle boat">കുട്ടവഞ്ചി</b> <span class="aprice">₹50</span><small data-en="per person">ഒരാൾക്ക്</small></div>
         <div class="ctr"><button type="button" data-k="c" data-d="-1" aria-label="−">−</button><output id="c">0</output><button type="button" data-k="c" data-d="1" aria-label="+">+</button></div></div>
-      <div class="step"><div><b data-en="Speed boat — ₹150">സ്പീഡ് ബോട്ടിങ് — ₹150</b><small data-en="per person · 20 min">ഒരാൾക്ക് · 20 മിനിറ്റ്</small></div>
+      <div class="step"><div><b data-en="Speed boat">സ്പീഡ് ബോട്ടിങ്</b> <span class="aprice">₹150</span><small data-en="per person · 20 min">ഒരാൾക്ക് · 20 മിനിറ്റ്</small></div>
         <div class="ctr"><button type="button" data-k="s" data-d="-1" aria-label="−">−</button><output id="s">0</output><button type="button" data-k="s" data-d="1" aria-label="+">+</button></div></div>
     </details></div>
 
