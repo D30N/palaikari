@@ -381,7 +381,7 @@ footer b{color:#fff}
         ci.style.color="#b3261e";
       }else{
         ci.textContent=(lang==="en"?capRemaining+" spots left":capRemaining+" സ്പോട്ട് ബാക്കി");
-        ci.style.color="var(--mute)";
+        ci.style.color=capRemaining>50?"#1f9d55":capRemaining>=20?"#d97706":"#b3261e";
       }
     }else{ci.textContent="";}
   }
