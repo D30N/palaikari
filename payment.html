@@ -71,13 +71,18 @@ input:focus{outline:3px solid #9db9d9;border-color:var(--lake)}
 .receipt .row b{color:var(--deep);text-align:right}
 .receipt .row.total-row{background:var(--mist)}
 .receipt .row.total-row b{font-family:var(--serif);font-size:22px}
-.bank{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin:0 0 6px}
-.bank .bhead{background:var(--mist);padding:8px 14px;font-weight:700;color:var(--deep);font-size:14px}
-.bank .bname{padding:9px 14px 0;font-weight:700;color:var(--deep);font-size:15.5px}
-.bank .brow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;border-top:1px solid var(--line)}
-.bank .brow span{display:block;color:var(--mute);font-size:13px}
-.bank .brow code{font-family:inherit;font-weight:700;color:var(--deep);font-size:15px;word-break:break-all}
-.bank .brow button{flex:none;border:0;background:var(--lake);color:#fff;border-radius:8px;padding:5px 10px;font:600 13px var(--sans);cursor:pointer}
+.bankbox{border:1.5px solid var(--line);border-radius:12px;margin:0 0 6px;background:#fff;overflow:hidden}
+.bankbox summary{display:flex;justify-content:space-between;align-items:center;gap:10px;list-style:none;cursor:pointer;padding:11px 14px;font-weight:700;color:var(--deep);font-size:14px}
+.bankbox summary::-webkit-details-marker{display:none}
+.bankbox summary .chev{color:var(--lake);transition:transform .2s;flex:none}
+.bankbox[open] summary .chev{transform:rotate(180deg)}
+.bankbox .bankbody{border-top:1px solid var(--line)}
+.bankbox .bname{padding:9px 14px 0;font-weight:700;color:var(--deep);font-size:15.5px}
+.bankbox .brow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;border-top:1px solid var(--line)}
+.bankbox .brow span{display:block;color:var(--mute);font-size:13px}
+.bankbox .brow code{font-family:inherit;font-weight:700;color:var(--deep);font-size:15px;word-break:break-all}
+.bankbox .brow button{flex:none;border:0;background:var(--lake);color:#fff;border-radius:8px;padding:5px 10px;font:600 13px var(--sans);cursor:pointer}
+.bankbox small{display:block;color:var(--mute);padding:8px 14px 12px;font-size:13px}
 .pay-logos{display:flex;justify-content:center;gap:8px;margin-top:8px}
 .pay-logos img{height:22px;width:auto;background:#fff;border-radius:6px;padding:2px 5px}
 footer{background:var(--deep);color:#a8c4de;padding:28px 0 calc(28px + env(safe-area-inset-bottom,0));font-size:14.5px;text-align:center}
@@ -123,13 +128,15 @@ footer b{color:#fff}
 
     <a class="go" id="upilink" style="display:block;text-align:center;text-decoration:none;margin-bottom:14px" href="#"><span data-en="Pay in UPI app">UPI ആപ്പിൽ പേ ചെയ്യൂ</span><span class="pay-logos"><img src="assets/gpay.png" alt="GPay"><img src="assets/phonepe.png" alt="PhonePe"><img src="assets/paytm.png" alt="Paytm"><img src="assets/bhim.svg" alt="BHIM"></span></a>
 
-    <div class="bank">
-      <div class="bhead" data-en="Account Details">അക്കൗണ്ട് വിവരങ്ങൾ</div>
-      <div class="bname">PALAIKARI FISH FARM</div>
-      <div class="brow"><div><span data-en="Account Number">Account Number</span><code>520101039575337</code></div><button type="button" class="cpbtn" data-copy="520101039575337" data-en="Copy">കോപ്പി</button></div>
-      <div class="brow"><div><span>IFSC</span><code>UBIN090265</code></div><button type="button" class="cpbtn" data-copy="UBIN090265" data-en="Copy">കോപ്പി</button></div>
-    </div>
-    <small style="color:var(--mute);display:block;margin-bottom:14px">Union Bank of India</small>
+    <details class="bankbox">
+      <summary><span data-en="Account Details">അക്കൗണ്ട് വിവരങ്ങൾ</span><span class="chev">▾</span></summary>
+      <div class="bankbody">
+        <div class="bname">PALAIKARI FISH FARM</div>
+        <div class="brow"><div><span data-en="Account Number">Account Number</span><code>520101039575337</code></div><button type="button" class="cpbtn" data-copy="520101039575337" data-en="Copy">കോപ്പി</button></div>
+        <div class="brow"><div><span>IFSC</span><code>UBIN090265</code></div><button type="button" class="cpbtn" data-copy="UBIN090265" data-en="Copy">കോപ്പി</button></div>
+        <small>Union Bank of India</small>
+      </div>
+    </details>
     <div class="fld"><label for="utr" data-en="UTR / Transaction ID (after paying)">പേ ചെയ്ത ശേഷം UTR / Transaction ID നൽകുക</label><input type="text" id="utr" autocomplete="off"></div>
     <p class="err" id="err" role="alert"></p>
     <button class="go green" id="send" type="button" data-en="Paid — confirm on WhatsApp">പേയ്‌മെന്റ് കഴിഞ്ഞു — WhatsApp ൽ കൺഫേം ചെയ്യൂ</button>
