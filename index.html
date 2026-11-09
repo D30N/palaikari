@@ -427,7 +427,14 @@ footer b{color:#fff}
       .catch(function(){capLoaded=false});
   }
   var d=$("date"), today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
-  d.min=d.value=today.toISOString().slice(0,10);
+  /* same-day booking closes at 12 PM (local time): after noon the earliest date is tomorrow */
+  function minDateStr(){
+    var n=new Date();
+    if(n.getHours()>=12)n.setDate(n.getDate()+1);
+    n.setMinutes(n.getMinutes()-n.getTimezoneOffset());
+    return n.toISOString().slice(0,10);
+  }
+  d.min=d.value=minDateStr();
   d.max=new Date(today.getTime()+89*864e5).toISOString().slice(0,10);
   function pass(){return document.querySelector("input[name=pass]:checked").value}
   function calc(){
@@ -446,7 +453,10 @@ footer b{color:#fff}
     $("tot").textContent="₹"+total;
     for(var k in n)$(k).textContent=n[k];
     var ci=$("capinfo");
-    if(capLoaded&&pass()==="full"){
+    if(d.value&&d.value<minDateStr()){
+      ci.textContent=lang==="en"?"Same-day booking closed at 12 PM — please choose tomorrow or a later date":"ഇന്നത്തേക്കുള്ള ബുക്കിങ് ഉച്ച 12 മണിക്ക് അവസാനിച്ചു — നാളെയോ അതിനു ശേഷമുള്ള തീയതിയോ തിരഞ്ഞെടുക്കൂ";
+      ci.style.color="#b3261e";
+    }else if(capLoaded&&pass()==="full"){
       if(capRemaining<=0){
         ci.textContent=lang==="en"?"Booking full for this date — please choose another date":"ഈ തീയതിയിൽ ബുക്കിങ് ഫുൾ ആണ് — വേറെ തീയതി തിരഞ്ഞെടുക്കൂ";
         ci.style.color="#b3261e";
@@ -473,6 +483,7 @@ footer b{color:#fff}
     }
     var nm=$("nm").value.trim(), ph=$("ph").value.replace(/\D/g,"");
     var e=!d.value?["തീയതി തിരഞ്ഞെടുക്കുക","Please choose a date"]
+      :d.value<minDateStr()?["ഇന്നത്തേക്കുള്ള ബുക്കിങ് ഉച്ച 12 മണിക്ക് അവസാനിച്ചു — നാളെയോ അതിനു ശേഷമുള്ള തീയതിയോ തിരഞ്ഞെടുക്കൂ","Same-day booking closed at 12 PM — please choose tomorrow or a later date"]
       :d.value>d.max?["90 ദിവസത്തിനുള്ളിലെ തീയതി തിരഞ്ഞെടുക്കുക","Please choose a date within the next 90 days"]
       :!nm?["പേര് നൽകുക","Please enter your name"]
       :ph.length!==10?["10 അക്ക മൊബൈൽ നമ്പർ നൽകുക","Please enter a 10-digit mobile number"]:null;
