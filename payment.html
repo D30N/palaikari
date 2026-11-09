@@ -71,8 +71,15 @@ input:focus{outline:3px solid #9fd3cf;border-color:var(--lake)}
 .receipt .row b{color:var(--deep);text-align:right}
 .receipt .row.total-row{background:var(--mist)}
 .receipt .row.total-row b{font-family:var(--serif);font-size:22px}
-.upi{display:flex;gap:8px;align-items:center;background:var(--mist);border-radius:10px;padding:8px 10px;margin:6px 0 12px;word-break:break-all;font-size:14px}
-.upi button{flex:none;border:0;background:var(--lake);color:#fff;border-radius:8px;padding:6px 12px;font:600 14px var(--sans);cursor:pointer}
+.bank{border:1.5px solid var(--line);border-radius:14px;overflow:hidden;margin:6px 0 12px}
+.bank .bhead{background:var(--mist);padding:10px 16px;font-weight:700;color:var(--deep);font-size:15px}
+.bank .bname{padding:12px 16px 2px;font-weight:700;color:var(--deep);font-size:17px}
+.bank .brow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-top:1px solid var(--line)}
+.bank .brow span{display:block;color:var(--mute);font-size:13.5px}
+.bank .brow code{font-family:inherit;font-weight:700;color:var(--deep);font-size:16px;word-break:break-all}
+.bank .brow button{flex:none;border:0;background:var(--lake);color:#fff;border-radius:8px;padding:6px 12px;font:600 13.5px var(--sans);cursor:pointer}
+.pay-logos{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.pay-logos img{height:22px;width:auto;background:#fff;border-radius:6px;padding:2px 5px}
 footer{background:var(--deep);color:#a8cbc8;padding:28px 0 calc(28px + env(safe-area-inset-bottom,0));font-size:14.5px;text-align:center}
 footer b{color:#fff}
 </style>
@@ -112,11 +119,16 @@ footer b{color:#fff}
     <div class="fld">
       <b data-en="Pay with any UPI app">ഏത് UPI ആപ്പിലും പേ ചെയ്യൂ</b>
       <p class="note" style="margin-top:2px" data-en="GPay, PhonePe, Paytm, BHIM. Check the amount matches the total above.">GPay / PhonePe / Paytm / BHIM. തുക മുകളിലുള്ള ആകെ തുകയ്ക്ക് തുല്യമാണെന്ന് ഉറപ്പാക്കൂ.</p>
-      <div class="upi"><code id="upiid">QR919400993314-5337@unionbankofindia</code><button type="button" id="cp" data-en="Copy">കോപ്പി</button></div>
-      <small style="color:var(--mute)">PALAIKARI FISH FARM · Union Bank of India</small>
+      <div class="bank">
+        <div class="bhead">My Profile</div>
+        <div class="bname">PALAIKARI FISH FARM</div>
+        <div class="brow"><div><span data-en="Account Number">Account Number</span><code>520101039575337</code></div><button type="button" class="cpbtn" data-copy="520101039575337" data-en="Copy">കോപ്പി</button></div>
+        <div class="brow"><div><span>IFSC</span><code>UBIN090265</code></div><button type="button" class="cpbtn" data-copy="UBIN090265" data-en="Copy">കോപ്പി</button></div>
+      </div>
+      <small style="color:var(--mute)">Union Bank of India</small>
     </div>
 
-    <a class="go" id="upilink" style="display:block;text-align:center;text-decoration:none;margin-bottom:18px" href="#"><span data-en="Pay in UPI app (mobile)">UPI ആപ്പിൽ പേ ചെയ്യൂ (മൊബൈൽ)</span></a>
+    <a class="go" id="upilink" style="display:block;text-align:center;text-decoration:none;margin-bottom:18px" href="#"><span data-en="Pay in UPI app">UPI ആപ്പിൽ പേ ചെയ്യൂ</span><span class="pay-logos"><img src="assets/gpay.png" alt="GPay"><img src="assets/phonepe.png" alt="PhonePe"><img src="assets/paytm.png" alt="Paytm"><img src="assets/bhim.svg" alt="BHIM"></span></a>
     <div class="fld"><label for="utr" data-en="UTR / Transaction ID (after paying)">പേ ചെയ്ത ശേഷം UTR / Transaction ID നൽകുക</label><input type="text" id="utr" autocomplete="off"></div>
     <p class="err" id="err" role="alert"></p>
     <button class="go green" id="send" type="button" data-en="Paid — confirm on WhatsApp">പേയ്‌മെന്റ് കഴിഞ്ഞു — WhatsApp ൽ കൺഫേം ചെയ്യൂ</button>
@@ -185,11 +197,11 @@ footer b{color:#fff}
   $("upilink").href="upi://pay?pa="+encodeURIComponent(UPI)+"&pn="+encodeURIComponent("PALAIKARI FISH FARM")+"&am="+total+"&cu=INR&tn="+encodeURIComponent("Palaikari booking");
 
   $("back").onclick=function(){history.back()};
-  $("cp").onclick=function(){
-    var b=$("cp"),t=b.innerHTML;
-    (navigator.clipboard?navigator.clipboard.writeText(UPI):Promise.reject()).catch(function(){}).then(function(){
+  document.querySelectorAll(".cpbtn").forEach(function(b){b.onclick=function(){
+    var t=b.innerHTML;
+    (navigator.clipboard?navigator.clipboard.writeText(b.dataset.copy):Promise.reject()).catch(function(){}).then(function(){
       b.textContent="✓"; setTimeout(function(){b.innerHTML=t},1500)});
-  };
+  }});
 
   var waUrl="";
   $("send").onclick=function(){
