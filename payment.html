@@ -199,6 +199,8 @@ footer b{color:#fff}
     document.querySelectorAll("[data-en]").forEach(function(e){e.innerHTML=l==="en"?e.dataset.en:e.dataset.ml});
     document.querySelectorAll(".lang button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.l===l)});
     try{localStorage.setItem("pff-lang",l)}catch(e){}
+    renderReceipt();
+    if(!date||!nm||!ph){$("err").textContent=lang==="en"?"No booking found. Please book from the home page.":"ബുക്കിങ് കണ്ടില്ല. ഹോം പേജിൽ നിന്ന് ബുക്ക് ചെയ്യൂ."}
   }
   document.querySelectorAll(".lang button").forEach(function(b){b.onclick=function(){setLang(b.dataset.l)}});
 
@@ -214,15 +216,18 @@ footer b{color:#fff}
   var ptxt=pass==="full"?"Full Day":"Evening Pass";
   var ttxt=pass==="full"?"10 AM – 6 PM":"3 PM – 6 PM";
   var ad=[];if(k)ad.push("Kayaking x"+k);if(c)ad.push("Coracle x"+c);if(s)ad.push("Speed boat x"+s);
-  $("r-date").textContent=date+(hol?(lang==="en"?" (holiday rate)":" (ഹോളിഡേ നിരക്ക്)"):"");
-  $("r-time").textContent=ttxt;
-  $("r-pass").textContent=ptxt;
-  $("r-guests").textContent=g;
-  $("r-addons").textContent=ad.join(", ")||(lang==="en"?"None":"ഇല്ല");
-  $("r-name").textContent=nm;
-  $("r-phone").textContent=ph;
-  if(disc>0){$("disc-row").style.display="flex";$("r-disc").textContent="−₹"+disc+" ("+free+" free entry)"}
-  $("r-total").textContent="₹"+total;
+  function renderReceipt(){
+    $("r-date").textContent=date+(hol?(lang==="en"?" (holiday rate)":" (ഹോളിഡേ നിരക്ക്)"):"");
+    $("r-time").textContent=ttxt;
+    $("r-pass").textContent=ptxt;
+    $("r-guests").textContent=g;
+    $("r-addons").textContent=ad.join(", ")||(lang==="en"?"None":"ഇല്ല");
+    $("r-name").textContent=nm;
+    $("r-phone").textContent=ph;
+    if(disc>0){$("disc-row").style.display="flex";$("r-disc").textContent="−₹"+disc+" ("+free+(lang==="en"?" free entry)":" ഫ്രീ എൻട്രി)")}
+    $("r-total").textContent="₹"+total;
+  }
+  renderReceipt();
   $("upilink").href="upi://pay?pa="+encodeURIComponent(UPI)+"&pn="+encodeURIComponent("PALAIKARI FISH FARM")+"&am="+total+"&cu=INR&tn="+encodeURIComponent("Palaikari booking");
 
   $("back").onclick=function(){history.back()};
