@@ -362,10 +362,10 @@ footer b{color:#fff}
   function calc(){
     var wk=d.value?[0,6].indexOf(new Date(d.value+"T00:00").getDay())>-1:false;
     holiday=wk||HOLIDAYS.has(d.value);
-    /* capacity */
-    var booked=capLoaded?(bookedByDate[d.value]||0):0;
+    /* capacity: Full Day only — no cap on Evening Pass */
+    var booked=(capLoaded&&pass()==="full")?(bookedByDate[d.value]||0):0;
     capRemaining=CAP-booked;
-    if(capLoaded&&capRemaining>0&&n.g>capRemaining)n.g=capRemaining;
+    if(pass()==="full"&&capLoaded&&capRemaining>0&&n.g>capRemaining)n.g=capRemaining;
     var r=P[pass()][holiday?1:0];
     var entry=pass()==="full"?(holiday?175:150):(holiday?150:100);
     free=Math.floor(n.g/10); disc=free*entry;
@@ -375,7 +375,7 @@ footer b{color:#fff}
     $("tot").textContent="₹"+total;
     for(var k in n)$(k).textContent=n[k];
     var ci=$("capinfo");
-    if(capLoaded){
+    if(capLoaded&&pass()==="full"){
       if(capRemaining<=0){
         ci.textContent=lang==="en"?"Booking full for this date — please choose another date":"ഈ തീയതിയിൽ ബുക്കിങ് ഫുൾ ആണ് — വേറെ തീയതി തിരഞ്ഞെടുക്കൂ";
         ci.style.color="#b3261e";
@@ -387,13 +387,13 @@ footer b{color:#fff}
   }
   document.querySelectorAll(".ctr button").forEach(function(b){b.onclick=function(){
     var k=b.dataset.k;
-    var mx=(k==="g"&&capLoaded)?Math.min(60,Math.max(1,capRemaining)):60;
+    var mx=(k==="g"&&capLoaded&&pass()==="full")?Math.min(60,Math.max(1,capRemaining)):60;
     n[k]=Math.max(k==="g"?1:0,Math.min(mx,n[k]+ +b.dataset.d)); calc()}});
   d.onchange=calc;
   document.querySelectorAll("input[name=pass]").forEach(function(r){r.onchange=calc});
 
   $("next").onclick=function(){
-    if(capLoaded&&capRemaining<=0){
+    if(capLoaded&&pass()==="full"&&capRemaining<=0){
       $("err").textContent=lang==="en"?"Booking full for this date. Please choose another date.":"ഈ തീയതിയിൽ ബുക്കിങ് ഫുൾ ആണ്. വേറെ തീയതി തിരഞ്ഞെടുക്കൂ.";
       return;
     }
