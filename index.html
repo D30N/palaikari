@@ -35,6 +35,9 @@ a{color:inherit}
 .lang button{border:0;background:none;color:#cfe7e4;font:600 13px var(--sans);padding:5px 12px;border-radius:99px;cursor:pointer}
 .lang button[aria-pressed=true]{background:#fff;color:var(--deep)}
 .cta{background:var(--sun);color:#1c0f02;font:700 15px var(--sans);border:0;border-radius:99px;padding:9px 18px;text-decoration:none;cursor:pointer;display:inline-block}
+.mapbtn{display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--deep);border:1.5px solid var(--line);border-radius:99px;padding:11px 22px;font:700 15.5px var(--sans);text-decoration:none;box-shadow:0 2px 8px rgba(11,46,51,.08)}
+.mapbtn:hover{border-color:var(--lake)}
+.mapbtn svg{flex:none;width:20px;height:20px}
 .cta:hover{background:#ff9a42}
 @media(max-width:640px){.bar nav .cta{display:none}.brand{font-size:15px}.lang button{padding:5px 10px}}
 
@@ -228,7 +231,7 @@ footer b{color:#fff}
         <h3>Evening Pass</h3>
         <p class="time">3 PM – 6 PM</p>
         <ul>
-          <li data-en="2-hour evening entry">വൈകുന്നേരത്തെ 2 മണിക്കൂർ എൻട്രി</li>
+          <li data-en="3-hour evening entry">വൈകുന്നേരത്തെ 3 മണിക്കൂർ എൻട്രി</li>
           <li data-en="Sunset view over the lake">സൂര്യാസ്തമയ തടാകക്കാഴ്ച</li>
           <li data-en="Boating add-ons available">ബോട്ടിങ് ആഡ്-ഓണുകൾ ചേർക്കാം</li>
         </ul>
@@ -303,7 +306,7 @@ footer b{color:#fff}
     <a href="tel:+919526041200"><b>95260 41200</b><span data-en="Enquiries">അന്വേഷണങ്ങൾ</span></a>
     <a href="tel:+914829273314"><b>04829 273314</b><span data-en="Landline">ലാൻഡ്‌ലൈൻ</span></a>
   </div>
-  <a class="cta" href="https://maps.app.goo.gl/yuAmDrUjF2s4asEF6" target="_blank" rel="noopener" data-en="📍 Open in Google Maps">📍 Google Maps ൽ ലൊക്കേഷൻ തുറക്കുക</a>
+  <a class="mapbtn" href="https://maps.app.goo.gl/yuAmDrUjF2s4asEF6" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.7" fill="#fff"/><circle cx="12" cy="9" r="1.2" fill="#4285F4"/></svg><span data-en="Open in Google Maps">Google Maps ൽ ലൊക്കേഷൻ തുറക്കുക</span></a>
 </section>
 </main>
 
