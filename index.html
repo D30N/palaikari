@@ -125,6 +125,13 @@ h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);color:var(--deep);l
 @media(max-width:720px){.act-modal{padding:24px}.act-card{width:min(340px,100%)}}
 @media(max-width:440px){.act-body{padding:16px 18px 20px}.act-body h3{font-size:20px}}
 
+/* demo mode: locked-feature popup (TEMPORARY — remove before launch) */
+.demo-modal{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(10,37,64,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility 0s linear .25s}
+.demo-modal.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .25s ease}
+.demo-card{position:relative;width:min(380px,100%);background:#fff;border-radius:16px;padding:28px 24px 24px;text-align:center;box-shadow:0 24px 60px -18px rgba(10,37,64,.55)}
+.demo-card p{font-size:16px;color:var(--deep);line-height:1.6}
+.demo-x{position:absolute;top:10px;right:12px;border:0;background:none;color:var(--mute);font-size:24px;line-height:1;cursor:pointer}
+
 /* tickets */
 .tickets{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 @media(max-width:760px){.tickets{grid-template-columns:1fr}}
@@ -288,6 +295,12 @@ footer b{color:#fff}
 </section>
 
 <!-- activity popup: one dialog, filled from INCL below (image, title, description — easy to replace) -->
+<div class="demo-modal" id="demoModal" role="dialog" aria-modal="true">
+  <div class="demo-card">
+    <button class="demo-x" type="button" aria-label="Close">&times;</button>
+    <p>Website is in demo mode. This feature is currently unavailable for security reasons.</p>
+  </div>
+</div>
 <div class="act-modal" id="act-modal" role="dialog" aria-modal="true" aria-labelledby="act-title">
   <div class="act-card">
     <button class="act-x" type="button" id="act-x" aria-label="Close">&times;</button>
@@ -484,7 +497,7 @@ footer b{color:#fff}
     <button class="go" id="next" type="button" data-en="Continue to payment">പേയ്‌മെന്റിലേക്ക് പോകുക</button>
   </div>
 
-  <p class="call"><span data-en="Booking confirms only after the farm verifies payment. Questions? Call">ബുക്കിങ് കൺഫേം ആകുന്നത് ഫാം പേയ്‌മെന്റ് വെരിഫൈ ചെയ്ത ശേഷമാണ്. സംശയങ്ങൾക്ക് വിളിക്കുക:</span> <a href="tel:+919526040066">95260 40066</a></p>
+  <p class="call"><span data-en="Booking confirms only after the farm verifies payment. Questions? Call">ബുക്കിങ് കൺഫേം ആകുന്നത് ഫാം പേയ്‌മെന്റ് വെരിഫൈ ചെയ്ത ശേഷമാണ്. സംശയങ്ങൾക്ക് വിളിക്കുക:</span> <a href="#" data-demo>9526XXXXXX</a></p>
 </div>
 </section>
 
@@ -492,9 +505,9 @@ footer b{color:#fff}
   <h2 data-en="Contact & location">ബന്ധപ്പെടുക & ലൊക്കേഷൻ</h2>
   <p class="sub" data-en="Call us for group bookings and any questions.">ഗ്രൂപ്പ് ബുക്കിങ്ങിനും സംശയങ്ങൾക്കും വിളിക്കുക.</p>
   <div class="nums">
-    <a href="tel:+919526040066"><b>95260 40066</b><span data-en="Booking — call">ബുക്കിങ് — Call</span></a>
-    <a href="tel:+919526041200"><b>95260 41200</b><span data-en="Enquiries">അന്വേഷണങ്ങൾ</span></a>
-    <a href="tel:+914829273314"><b>04829 273314</b><span data-en="Landline">ലാൻഡ്‌ലൈൻ</span></a>
+    <a href="#" data-demo><b>9526XXXXXX</b><span data-en="Booking — call">ബുക്കിങ് — Call</span></a>
+    <a href="#" data-demo><b>9526XXXXXX</b><span data-en="Enquiries">അന്വേഷണങ്ങൾ</span></a>
+    <a href="#" data-demo><b>0482XXXXXXX</b><span data-en="Landline">ലാൻഡ്‌ലൈൻ</span></a>
   </div>
   <a class="mapbtn" href="https://maps.app.goo.gl/yuAmDrUjF2s4asEF6" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335"/><circle cx="12" cy="9" r="2.7" fill="#fff"/><circle cx="12" cy="9" r="1.2" fill="#4285F4"/></svg><span data-en="Open in Google Maps">Google Maps ൽ ലൊക്കേഷൻ തുറക്കുക</span></a>
 </section>
@@ -641,7 +654,7 @@ footer b{color:#fff}
       +'<div class="row"><span data-en="Number of persons">ആളുകളുടെ എണ്ണം</span><b>'+esc(b.guests)+'</b></div>'
       +'<div class="row"><span data-en="Total paid">ആകെ അടച്ച തുക</span><b>₹'+esc(b.total||0)+'</b></div>'
       +'<p class="status" data-en="Payment sent — the farm will verify and confirm on WhatsApp.">പേയ്‌മെന്റ് അയച്ചു — ഫാം വെരിഫൈ ചെയ്ത് WhatsApp ൽ കൺഫർമേഷൻ അയയ്ക്കും.</p>'
-      +'<div class="actions"><a class="cta" href="https://wa.me/917306479394?text='+encodeURIComponent("Booking status? "+b.ref)+'" target="_blank" rel="noopener">Booking status?</a><button class="newbtn" type="button" data-en="+ New booking">+ പുതിയ ബുക്കിങ്</button></div></div>';
+      +'<div class="actions"><a class="cta" href="#" data-demo>Booking status?</a><button class="newbtn" type="button" data-en="+ New booking">+ പുതിയ ബുക്കിങ്</button></div></div>';
   }
   function showLastBooking(){
     var list=getBookings().filter(function(b){return b&&b.ref});
@@ -673,6 +686,16 @@ footer b{color:#fff}
   };
   $("lb-modal").onclick=function(e){if(e.target===$("lb-modal")){$("lb-modal").classList.add("hide");pendingRef=""}};
   showLastBooking();
+
+  /* TEMPORARY demo mode: locked features show a popup instead of opening payment/WhatsApp/call links */
+  function showDemo(){var m=document.getElementById("demoModal");if(m){m.classList.add("open");document.body.style.overflow="hidden"}}
+  function hideDemo(){var m=document.getElementById("demoModal");if(m){m.classList.remove("open");document.body.style.overflow=""}}
+  document.addEventListener("click",function(e){
+    var t=e.target.closest("[data-demo]");
+    if(t){e.preventDefault();showDemo();return}
+    if(e.target.classList&&(e.target.classList.contains("demo-modal")||e.target.classList.contains("demo-x")))hideDemo();
+  });
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")hideDemo()});
 
   loadCap();
   var s;try{s=localStorage.getItem("pff-lang")}catch(e){}
